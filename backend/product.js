@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const productSchema = new mongoose.Schema({
   id: {
-    type: Long,
+    type: Number,
     required: true
   },
   title: {
@@ -27,7 +27,7 @@ const productSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    required: true,
+    required: false,
     default: ""
   },
   rating: { //TODO store as (rate, count)
