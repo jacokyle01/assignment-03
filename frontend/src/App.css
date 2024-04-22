@@ -40,3 +40,24 @@
 .read-the-docs {
   color: #888;
 }
+
+.header {
+  background-color: green;
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px;
+}
+
+.button {
+  font-size: 20px;
+  background: none;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-right: 10px;
+}
+
+.button:hover {
+  text-decoration: underline;
+}
