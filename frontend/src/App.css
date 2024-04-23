@@ -45,7 +45,9 @@
   background-color: green;
   display: flex;
   justify-content: flex-start;
-  padding: 10px;
+  padding: '10px'; 
+  margin-top: 0px;
+  
 }
 
 .button {
@@ -68,4 +70,15 @@
   font-size: 20;
   background: "green ";
   color: "white";
+}
+
+.student-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 10px;
+}
+
+.student {
+  flex: 0 0 45%;
 }
