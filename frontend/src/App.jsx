@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import "./App.css";
@@ -12,13 +12,26 @@ function App() {
 		formState: { errors },
 	} = useForm();
 	const [dataF, setDataF] = useState({});
+	const [products, setProducts] = useState(null);
 
-	const fetchProducts = async () => {
-		return fetch("http://localhost:3001/products").then((data) => data.json);
-	};
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/products");
+        const data = await response.json();
+				console.log(data);
+        setProducts(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+		console.log(products);
+  }, []); // Empty dependency array to run the effect only once when the component mounts
 
 	const renderProducts = () => {
-		const products = fetchProducts();
 		console.log(products);
 		return (
 			<div id="product-wrap">
@@ -32,36 +45,36 @@ function App() {
 						<p>{product.rating}</p>
 					</div>
 				))}
-				;
+				
 			</div>
 		);
 	};
 
-	const readProductsView = () => {
-		return (
-			<div id="main">
-				<header className="header">
-					<button className="button" onClick={() => setView("addProduct")}>
-						{" "}
-						Create Product
-					</button>
-					<button className="button" onClick={() => setView("updatePrice")}>
-						{" "}
-						Update Price
-					</button>
-					<button className="button" onClick={() => setView("deleteProduct")}>
-						{" "}
-						Delete Product
-					</button>
-					<button className="button" onClick={() => setView("studentInfo")}>
-						{" "}
-						Meet the Authors
-					</button>
-				</header>
-				<main>{renderProducts()}</main>
-			</div>
-		);
-	};
+	// const readProductsView = () => {
+	// 	return (
+	// 		<div id="main">
+	// 			<header className="header">
+	// 				<button className="button" onClick={() => setView("addProduct")}>
+	// 					{" "}
+	// 					Create Product
+	// 				</button>
+	// 				<button className="button" onClick={() => setView("updatePrice")}>
+	// 					{" "}
+	// 					Update Price
+	// 				</button>
+	// 				<button className="button" onClick={() => setView("deleteProduct")}>
+	// 					{" "}
+	// 					Delete Product
+	// 				</button>
+	// 				<button className="button" onClick={() => setView("studentInfo")}>
+	// 					{" "}
+	// 					Meet the Authors
+	// 				</button>
+	// 			</header>
+	// 			<main>{renderProducts()}</main>
+	// 		</div>
+	// 	);
+	// };
 
 	const createProduct = async (data) => {
 		fetch("http://localhost:3001/products", {
@@ -265,7 +278,7 @@ function App() {
 			case "addProduct":
 				return renderAddProduct();
 			case "readProducts":
-				return readProductsView();
+				return renderProducts();
 			case "updatePrice":
 				// return updatePriceView();
 				break;
