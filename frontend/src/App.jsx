@@ -14,22 +14,21 @@ function App() {
 	const [dataF, setDataF] = useState({});
 	const [products, setProducts] = useState(null);
 
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/products");
-        const data = await response.json();
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await fetch("http://localhost:3001/products");
+				const data = await response.json();
 				console.log(data);
-        setProducts(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+				setProducts(data);
+			} catch (error) {
+				console.error("Error fetching data:", error);
+			}
+		};
 
-    fetchData();
+		fetchData();
 		console.log(products);
-  }, []); // Empty dependency array to run the effect only once when the component mounts
+	}, []); // Empty dependency array to run the effect only once when the component mounts
 
 	const renderProducts = () => {
 		console.log(products);
@@ -45,36 +44,9 @@ function App() {
 						<p>{product.rating}</p>
 					</div>
 				))}
-				
 			</div>
 		);
 	};
-
-	// const readProductsView = () => {
-	// 	return (
-	// 		<div id="main">
-	// 			<header className="header">
-	// 				<button className="button" onClick={() => setView("addProduct")}>
-	// 					{" "}
-	// 					Create Product
-	// 				</button>
-	// 				<button className="button" onClick={() => setView("updatePrice")}>
-	// 					{" "}
-	// 					Update Price
-	// 				</button>
-	// 				<button className="button" onClick={() => setView("deleteProduct")}>
-	// 					{" "}
-	// 					Delete Product
-	// 				</button>
-	// 				<button className="button" onClick={() => setView("studentInfo")}>
-	// 					{" "}
-	// 					Meet the Authors
-	// 				</button>
-	// 			</header>
-	// 			<main>{renderProducts()}</main>
-	// 		</div>
-	// 	);
-	// };
 
 	const createProduct = async (data) => {
 		fetch("http://localhost:3001/products", {
