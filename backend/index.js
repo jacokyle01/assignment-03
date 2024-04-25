@@ -75,9 +75,8 @@ app.put("/products/:id", async (req, res) => {
 //create a new product
 app.post("/products", async (req, res) => {
 	console.log(req.body);
-	const { id, title, price, description, category, image, rating } = req.body;
+	const { title, price, description, category, image, rating } = req.body;
 	const product = new Product({
-		id,
 		title,
 		price,
 		description,
