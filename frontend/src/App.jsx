@@ -15,6 +15,7 @@ function App() {
 	} = useForm();
 	const [dataF, setDataF] = useState({});
 	const [products, setProducts] = useState(null);
+  const [add, addView] = useState({});
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -30,7 +31,7 @@ function App() {
 
 		fetchData();
 		console.log(products);
-	}, []); // Empty dependency array to run the effect only once when the component mounts
+	}, [add]); // Empty dependency array to run the effect only once when the component mounts
 
 	const renderProducts = () => {
 		console.log(products);
@@ -39,9 +40,9 @@ function App() {
       <Row xs={1} md={2} lg={3} className="g-4">
         {products.map((product) => (
           <Col key={product.id}>
-            <Card style={{ height: '100%' }}>
+            <Card className="custom-card">
               <Card.Img variant="top" src={product.image} style={{ height: '50%' }}  />
-              <Card.Body style={{ height: '50%' }}>
+              <Card.Body className="custom-card-body">
                 <Card.Title>{product.title}</Card.Title>
                 <Card.Text>
                   <strong>Price:</strong> {product.price}
@@ -54,28 +55,12 @@ function App() {
                   <br />
                   <strong>Rating:</strong> {product.rating}
                 </Card.Text>
-                <Button variant="primary">View Details</Button>
               </Card.Body>
             </Card>
           </Col>
         ))}
       </Row>
     );
-
-		// return (
-		// 	<div id="product-wrap">
-		// 		{products.map((product) => (
-		// 			<div key={product.id} id="product">
-		// 				<img src={product.image} />
-		// 				<h1>{product.title}</h1>
-		// 				<h2>{product.price}</h2>
-		// 				<h2>{product.category}</h2>
-		// 				<p>{product.description}</p>
-		// 				<p>{product.rating}</p>
-		// 			</div>
-		// 		))}
-		// 	</div>
-		// );
 	};
 
 	const createProduct = async (data) => {
@@ -83,7 +68,6 @@ function App() {
 			method: "POST",
 			headers: { "content-type": "application/json" },
 			body: JSON.stringify({
-        id: 5,
 				title: data.title,
 				price: data.price,
 				description: data.description,
@@ -99,6 +83,9 @@ function App() {
 			console.log({ data });
 			setDataF(data);
 			createProduct(data);
+      const response = fetch("http://localhost:3001/products");
+      addView(response);
+      setView("readProducts");
 		};
 
 		return (
@@ -240,7 +227,7 @@ function App() {
     return (
       <Navbar collapseOnSelect bg="dark" variant="dark" expand="lg">
         <Container>
-          <Navbar.Brand href="#home">My Products</Navbar.Brand>
+          <Navbar.Brand>MERN</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
@@ -300,32 +287,62 @@ function App() {
 		// );
 	};
 
-  const setUpdatePriceView = (product) => {
-    return (
-            <Card style={{ height: '100%' }}>
-              <Card.Img variant="top" src={product.image} style={{ height: '50%' }}  />
-              <Card.Body style={{ height: '50%' }}>
-                <Card.Title>{product.title}</Card.Title>
-                <Card.Text>
-                  <strong>Price:</strong> {product.price}
+  const updatePriceView2 = () => {
+    const onSubmit = async (formdata) => {
+      console.log(formdata);
+			console.log( dataF.id );
+
+      const response = await fetch(`http://localhost:3001/products/${dataF.id}`, {
+        method: "PUT",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          price: formdata.price
+        })
+      });
+
+      console.log(response);
+      addView(response);
+      setView("readProducts");
+    };
+      return (
+        <div>
+          <Card style={{ height: '100%' }}>
+            <Card.Img variant="top" src={dataF.image} style={{ height: '50%' }}  />
+            <Card.Body style={{ height: '50%' }}>
+              <Card.Title>{dataF.title}</Card.Title>
+              <Card.Text>
+                <strong>Price:</strong> {dataF.price}
+                <br />
+                <strong>Category:</strong> {dataF.category}
+                <br />
+                <strong>Product ID:</strong> {dataF.id}
                   <br />
-                  <strong>Category:</strong> {product.category}
-                  <br />
-                  {product.description}
-                  <br />
-                  <strong>Rating:</strong> {product.rating}
-                </Card.Text>
-                <Button variant="primary">View Details</Button>
-              </Card.Body>
-            </Card>
-          );
-  }
+                {dataF.description}
+                <br />
+                <strong>Rating:</strong> {dataF.rating}
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
+            <div className="form-group">
+              <input
+                {...register("price", { required: true, pattern: /^\d+\.\d{2}$/ })}
+                placeholder="New Price"
+              />
+              {errors.title && <p>Valid price is required.</p>}
+            </div>
+            <button type="submit" className="button-add-product">
+              Update Price
+            </button>
+        </form>
+        </div>
+      )
+  };
 
   const updatePriceView = () => {
 
     const onSubmit = async (formdata) => {
 			console.log({ formdata });
-			setDataF(formdata);
 
       const response = await fetch(`http://localhost:3001/products/${formdata.id}`, {
         method: "GET"
@@ -334,9 +351,7 @@ function App() {
       const product = await response.json();
       console.log({ product });
       setDataF(product);
-
-      setUpdatePriceView(product);
-
+      setView("updatePrice2");
 		};
 
     return (
@@ -355,11 +370,51 @@ function App() {
     )
   };
 
+  const deleteProductView2 = () => {
+    const onSubmit = async () => {
+			console.log( dataF.id );
+
+      const response = await fetch(`http://localhost:3001/products/${dataF.id}`, {
+        method: "DELETE"
+      });
+      console.log(response);
+      addView(response);
+      setView("readProducts");
+    };
+      return (
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center'}}>
+          <Card style={{ height: '500px', width: '400px' }}>
+            <Card.Img variant="top" src={dataF.image} style={{ height: '60%' }}  />
+            <Card.Body style={{ height: '50%' }}>
+              <Card.Title>{dataF.title}</Card.Title>
+              <Card.Text>
+                <strong>Price:</strong> {dataF.price}
+                <br />
+                <strong>Category:</strong> {dataF.category}
+                <br />
+                <strong>Product ID:</strong> {dataF.id}
+                  <br />
+                {dataF.description}
+                <br />
+                <strong>Rating:</strong> {dataF.rating}
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          </div>
+          <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
+            <button type="submit" className="button-add-product">
+              Confirm Deletion
+            </button>
+          </form>
+        </div>
+      )
+  };
+
   const deleteProductView = () => {
 
     const onSubmit = async (formdata) => {
 			console.log({ formdata });
-			setDataF(formdata);
 
       const response = await fetch(`http://localhost:3001/products/${formdata.id}`, {
         method: "GET"
@@ -367,26 +422,8 @@ function App() {
 
       const product = await response.json();
       console.log({ product });
-
-      return (
-        <Card style={{ height: '100%' }}>
-          <Card.Img variant="top" src={product.image} style={{ height: '50%' }}  />
-          <Card.Body style={{ height: '50%' }}>
-            <Card.Title>{product.title}</Card.Title>
-            <Card.Text>
-              <strong>Price:</strong> {product.price}
-              <br />
-              <strong>Category:</strong> {product.category}
-              <br />
-              {product.description}
-              <br />
-              <strong>Rating:</strong> {product.rating}
-            </Card.Text>
-            <Button variant="primary">View Details</Button>
-          </Card.Body>
-        </Card>
-      );
-
+      setDataF(product);
+      setView("deleteProduct2");
 		};
 
     return (
@@ -414,8 +451,12 @@ function App() {
 				return renderProducts();
 			case "updatePrice":
 				return updatePriceView();
+      case "updatePrice2":
+        return updatePriceView2();
 			case "deleteProduct":
 				 return deleteProductView();
+      case "deleteProduct2":
+        return deleteProductView2(); 
 			case "studentInfo":
 				return (
 					<Row>

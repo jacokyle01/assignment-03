@@ -82,3 +82,19 @@
 .student {
   flex: 0 0 45%;
 }
+
+.custom-card {
+  height: 550px;
+  width: 350px;
+}
+
+.custom-card-img {
+  /* height: 300px;
+  width: 100%; */
+  /* object-fit: contain; */
+  height: 50%;
+}
+
+.custom-card-body {
+  height: 50%;
+}
