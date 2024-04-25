@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, Card, Container, Row, Col, Button } from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
+// import MyNavbar from './Navbar';
 import "./App.css";
 
 function App() {
@@ -32,20 +34,48 @@ function App() {
 
 	const renderProducts = () => {
 		console.log(products);
-		return (
-			<div id="product-wrap">
-				{products.map((product) => (
-					<div key={product.id} id="product">
-						<img src={product.image} />
-						<h1>{product.title}</h1>
-						<h2>{product.price}</h2>
-						<h2>{product.category}</h2>
-						<p>{product.description}</p>
-						<p>{product.rating}</p>
-					</div>
-				))}
-			</div>
-		);
+
+    return (
+      <Row xs={1} md={2} lg={3} className="g-4">
+        {products.map((product) => (
+          <Col key={product.id}>
+            <Card style={{ height: '100%' }}>
+              <Card.Img variant="top" src={product.image} style={{ height: '50%' }}  />
+              <Card.Body style={{ height: '50%' }}>
+                <Card.Title>{product.title}</Card.Title>
+                <Card.Text>
+                  <strong>Price:</strong> {product.price}
+                  <br />
+                  <strong>Category:</strong> {product.category}
+                  <br />
+                  <strong>Product ID:</strong> {product.id}
+                  <br />
+                  {product.description}
+                  <br />
+                  <strong>Rating:</strong> {product.rating}
+                </Card.Text>
+                <Button variant="primary">View Details</Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    );
+
+		// return (
+		// 	<div id="product-wrap">
+		// 		{products.map((product) => (
+		// 			<div key={product.id} id="product">
+		// 				<img src={product.image} />
+		// 				<h1>{product.title}</h1>
+		// 				<h2>{product.price}</h2>
+		// 				<h2>{product.category}</h2>
+		// 				<p>{product.description}</p>
+		// 				<p>{product.rating}</p>
+		// 			</div>
+		// 		))}
+		// 	</div>
+		// );
 	};
 
 	const createProduct = async (data) => {
@@ -53,12 +83,13 @@ function App() {
 			method: "POST",
 			headers: { "content-type": "application/json" },
 			body: JSON.stringify({
-				id: data.id,
-				title: `"${data.title}"`,
+        id: 5,
+				title: data.title,
 				price: data.price,
-				description: `"${data.description}"`,
+				description: data.description,
 				category: data.category,
 				image: data.image,
+        rating: 2.5
 			}),
 		});
 	};
@@ -102,7 +133,7 @@ function App() {
 							{...register("category", { required: true })}
 							placeholder="Product Category"
 						>
-							<option value="">Select Product Rating</option>
+							<option value="">Select Category</option>
 							<option value="menCloth">Mens Clothing</option>
 							<option value="womenCloth">Womens Clothing</option>
 							<option value="jewelry">Jewelry</option>
@@ -116,10 +147,16 @@ function App() {
 							placeholder="Product Image"
 						>
 							<option value="">Select Product Image</option>
-							<option value="menShirt">Mens Slim Fit T-Shirt</option>
-							<option value="menJacket">Mens Jacket</option>
-							<option value="womenShirt">Womens Shirt</option>
-							<option value="womenJacket">Womens Raincoat</option>
+							<option value="https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg">Mens Slim Fit T-Shirt</option>
+              <option value="https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg">Backpack</option>
+              <option value="https://fakestoreapi.com/img/71pWzhdJNwL._AC_UL640_QL65_ML3_.jpg">Bracelet</option>
+              <option value="https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_.jpg">Earrings</option>
+              <option value="https://fakestoreapi.com/img/71YAIFU48IL._AC_UL640_QL65_ML3_.jpg">Ring</option>
+              <option value="https://fakestoreapi.com/img/61IBBVJvSDL._AC_SY879_.jpg">USB Drive</option>
+              <option value="https://fakestoreapi.com/img/81QpkIctqPL._AC_SX679_.jpg">Laptop</option>
+							<option value="https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg">Mens Jacket</option>
+							<option value="https://fakestoreapi.com/img/51eg55uWmdL._AC_UX679_.jpg">Womens Shirt</option>
+							<option value="https://fakestoreapi.com/img/71HblAHs5xL._AC_UY879_-2.jpg">Womens Raincoat</option>
 						</select>
 						{errors.rating && <p>Product rating is required.</p>}
 					</div>
@@ -199,50 +236,174 @@ function App() {
 	};
 
 	const renderNavbar = () => {
-		return (
-			<Container fluid className="p-0">
-				<Row className="bg-success text-white">
-					<Col className="d-flex justify-content-center align-items-center py-3">
-						<Button
-							variant="light"
-							className="mx-2"
-							onClick={() => setView("addProduct")}
-						>
-							Create Product
-						</Button>
-						<Button
-							variant="light"
-							className="mx-2"
-							onClick={() => setView("readProducts")}
-						>
-							See Products
-						</Button>
-						<Button
-							variant="light"
-							className="mx-2"
-							onClick={() => setView("updatePrice")}
-						>
-							Update Price
-						</Button>
-						<Button
-							variant="light"
-							className="mx-2"
-							onClick={() => setView("deleteProduct")}
-						>
-							Delete Product
-						</Button>
-						<Button
-							variant="light"
-							className="mx-2"
-							onClick={() => setView("studentInfo")}
-						>
-							Meet the Authors
-						</Button>
-					</Col>
-				</Row>
-			</Container>
-		);
+
+    return (
+      <Navbar collapseOnSelect bg="dark" variant="dark" expand="lg">
+        <Container>
+          <Navbar.Brand href="#home">My Products</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link onClick={() => setView("addProduct")}>Add Product</Nav.Link>
+              <Nav.Link onClick={() => setView("readProducts")}>Read Products</Nav.Link>
+              <Nav.Link onClick={() => setView("updatePrice")}>Update Price</Nav.Link>
+              <Nav.Link onClick={() => setView("deleteProduct")}>Delete Product</Nav.Link>
+              <Nav.Link onClick={() => setView("studentInfo")}>Meet the Authors</Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+    );
+
+		// return (
+		// 	<Container fluid className="p-0">
+		// 		<Row className="bg-success text-white">
+		// 			<Col className="d-flex justify-content-center align-items-center py-3">
+		// 				<Button
+		// 					variant="light"
+		// 					className="mx-2"
+		// 					onClick={() => setView("addProduct")}
+		// 				>
+		// 					Create Product
+		// 				</Button>
+		// 				<Button
+		// 					variant="light"
+		// 					className="mx-2"
+		// 					onClick={() => setView("readProducts")}
+		// 				>
+		// 					See Products
+		// 				</Button>
+		// 				<Button
+		// 					variant="light"
+		// 					className="mx-2"
+		// 					onClick={() => setView("updatePrice")}
+		// 				>
+		// 					Update Price
+		// 				</Button>
+		// 				<Button
+		// 					variant="light"
+		// 					className="mx-2"
+		// 					onClick={() => setView("deleteProduct")}
+		// 				>
+		// 					Delete Product
+		// 				</Button>
+		// 				<Button
+		// 					variant="light"
+		// 					className="mx-2"
+		// 					onClick={() => setView("studentInfo")}
+		// 				>
+		// 					Meet the Authors
+		// 				</Button>
+		// 			</Col>
+		// 		</Row>
+		// 	</Container>
+		// );
 	};
+
+  const setUpdatePriceView = (product) => {
+    return (
+            <Card style={{ height: '100%' }}>
+              <Card.Img variant="top" src={product.image} style={{ height: '50%' }}  />
+              <Card.Body style={{ height: '50%' }}>
+                <Card.Title>{product.title}</Card.Title>
+                <Card.Text>
+                  <strong>Price:</strong> {product.price}
+                  <br />
+                  <strong>Category:</strong> {product.category}
+                  <br />
+                  {product.description}
+                  <br />
+                  <strong>Rating:</strong> {product.rating}
+                </Card.Text>
+                <Button variant="primary">View Details</Button>
+              </Card.Body>
+            </Card>
+          );
+  }
+
+  const updatePriceView = () => {
+
+    const onSubmit = async (formdata) => {
+			console.log({ formdata });
+			setDataF(formdata);
+
+      const response = await fetch(`http://localhost:3001/products/${formdata.id}`, {
+        method: "GET"
+      });
+
+      const product = await response.json();
+      console.log({ product });
+      setDataF(product);
+
+      setUpdatePriceView(product);
+
+		};
+
+    return (
+        <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
+            <div className="form-group">
+              <input
+                {...register("id", { required: true })}
+                placeholder="Product ID"
+              />
+              {errors.title && <p>Product id is required.</p>}
+            </div>
+            <button type="submit" className="button-add-product">
+              Find Product
+            </button>
+        </form>
+    )
+  };
+
+  const deleteProductView = () => {
+
+    const onSubmit = async (formdata) => {
+			console.log({ formdata });
+			setDataF(formdata);
+
+      const response = await fetch(`http://localhost:3001/products/${formdata.id}`, {
+        method: "GET"
+      });
+
+      const product = await response.json();
+      console.log({ product });
+
+      return (
+        <Card style={{ height: '100%' }}>
+          <Card.Img variant="top" src={product.image} style={{ height: '50%' }}  />
+          <Card.Body style={{ height: '50%' }}>
+            <Card.Title>{product.title}</Card.Title>
+            <Card.Text>
+              <strong>Price:</strong> {product.price}
+              <br />
+              <strong>Category:</strong> {product.category}
+              <br />
+              {product.description}
+              <br />
+              <strong>Rating:</strong> {product.rating}
+            </Card.Text>
+            <Button variant="primary">View Details</Button>
+          </Card.Body>
+        </Card>
+      );
+
+		};
+
+    return (
+        <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
+            <div className="form-group">
+              <input
+                {...register("id", { required: true })}
+                placeholder="Product ID"
+              />
+              {errors.title && <p>Product id is required.</p>}
+            </div>
+            <button type="submit" className="button-add-product">
+              Delete Product
+            </button>
+        </form>
+    )
+  };
 
 	const renderView = () => {
 		console.log(view);
@@ -252,11 +413,9 @@ function App() {
 			case "readProducts":
 				return renderProducts();
 			case "updatePrice":
-				// return updatePriceView();
-				break;
+				return updatePriceView();
 			case "deleteProduct":
-				// return deleteProductView();
-				break;
+				 return deleteProductView();
 			case "studentInfo":
 				return (
 					<Row>
