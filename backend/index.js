@@ -1,5 +1,5 @@
 require("dotenv").config();
-var cors = require('cors')
+var cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
 const Product = require("./product");
@@ -7,7 +7,7 @@ const Product = require("./product");
 const PORT = process.env.PORT || 3001;
 
 const app = express();
-app.use(cors())
+app.use(cors());
 app.use(express.json());
 
 app.listen(PORT, () =>
@@ -85,6 +85,8 @@ app.post("/products", async (req, res) => {
 		image,
 		rating,
 	});
+	await product.save();
+	res.json(product);
 });
 
 //delete a product
