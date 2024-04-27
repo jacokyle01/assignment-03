@@ -45,7 +45,7 @@ function App() {
               <Card.Body className="custom-card-body">
                 <Card.Title>{product.title}</Card.Title>
                 <Card.Text>
-                  <strong>Price:</strong> {product.price}
+                  <strong>Price:</strong> ${product.price}
                   <br />
                   <strong>Category:</strong> {product.category}
                   <br />
@@ -241,50 +241,6 @@ function App() {
         </Container>
       </Navbar>
     );
-
-		// return (
-		// 	<Container fluid className="p-0">
-		// 		<Row className="bg-success text-white">
-		// 			<Col className="d-flex justify-content-center align-items-center py-3">
-		// 				<Button
-		// 					variant="light"
-		// 					className="mx-2"
-		// 					onClick={() => setView("addProduct")}
-		// 				>
-		// 					Create Product
-		// 				</Button>
-		// 				<Button
-		// 					variant="light"
-		// 					className="mx-2"
-		// 					onClick={() => setView("readProducts")}
-		// 				>
-		// 					See Products
-		// 				</Button>
-		// 				<Button
-		// 					variant="light"
-		// 					className="mx-2"
-		// 					onClick={() => setView("updatePrice")}
-		// 				>
-		// 					Update Price
-		// 				</Button>
-		// 				<Button
-		// 					variant="light"
-		// 					className="mx-2"
-		// 					onClick={() => setView("deleteProduct")}
-		// 				>
-		// 					Delete Product
-		// 				</Button>
-		// 				<Button
-		// 					variant="light"
-		// 					className="mx-2"
-		// 					onClick={() => setView("studentInfo")}
-		// 				>
-		// 					Meet the Authors
-		// 				</Button>
-		// 			</Col>
-		// 		</Row>
-		// 	</Container>
-		// );
 	};
 
   const updatePriceView2 = () => {
@@ -292,22 +248,28 @@ function App() {
       console.log(formdata);
 			console.log( dataF.id );
 
-      const response = await fetch(`http://localhost:3001/products/${dataF.id}`, {
-        method: "PUT",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          price: formdata.price
-        })
-      });
+      try {
+        const response = await fetch(`http://localhost:3001/products/${dataF.id}`, {
+          method: "PUT",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            price: formdata.price
+          })
+        });
 
-      console.log(response);
-      addView(response);
-      setView("readProducts");
+        console.log(response);
+        addView(response);
+        setView("readProducts");
+    } catch (error) {
+        console.log(error);
+    }
+
     };
       return (
         <div>
-          <Card style={{ height: '100%' }}>
-            <Card.Img variant="top" src={dataF.image} style={{ height: '50%' }}  />
+          <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center'}}>
+          <Card style={{ height: '500px', width: '400px' }}>
+            <Card.Img variant="top" src={dataF.image} style={{ height: '60%' }}  />
             <Card.Body style={{ height: '50%' }}>
               <Card.Title>{dataF.title}</Card.Title>
               <Card.Text>
@@ -323,6 +285,7 @@ function App() {
               </Card.Text>
             </Card.Body>
           </Card>
+          </div>
           <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
             <div className="form-group">
               <input
@@ -347,11 +310,12 @@ function App() {
       const response = await fetch(`http://localhost:3001/products/${formdata.id}`, {
         method: "GET"
       });
-
       const product = await response.json();
-      console.log({ product });
-      setDataF(product);
-      setView("updatePrice2");
+      if (product != null) {
+        console.log({ product });
+        setDataF(product);
+        setView("updatePrice2");
+      }
 		};
 
     return (
@@ -422,8 +386,10 @@ function App() {
 
       const product = await response.json();
       console.log({ product });
-      setDataF(product);
-      setView("deleteProduct2");
+      if (product != null) {
+        setDataF(product);
+        setView("deleteProduct2");
+      }
 		};
 
     return (
